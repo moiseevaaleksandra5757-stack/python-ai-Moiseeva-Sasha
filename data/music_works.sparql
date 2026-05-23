@@ -1,0 +1,24 @@
+# Musical works and their authors: SPARQL query for Wikidata
+# Музыкальные произведения и их авторы: SPARQL-запрос к Викиданным
+
+SELECT DISTINCT ?work ?workLabel ?authorLabel ?genreLabel ?countryLabel ?durationLabel ?publicationDate ?performerLabel ?partOfLabel
+WHERE {
+  # Основные обязательные поля
+  ?work wdt:P31 wd:Q7366 ;  # Экземпляр: музыкальное произведение
+          wdt:P50 ?author.  # Автор произведения
+
+  # Опциональные поля для произведения
+  OPTIONAL { ?work wdt:P136 ?genre. }            # Жанр произведения
+  OPTIONAL { ?work wdt:P2047 ?duration. }        # Продолжительность
+  OPTIONAL { ?work wdt:P577 ?publicationDate. }   # Дата публикации
+  OPTIONAL { ?work wdt:P175 ?performer. }        # Исполнитель
+  OPTIONAL { ?work wdt:P361 ?partOf. }            # Часть чего (альбом, сборник)
+
+  # Опциональные поля для автора
+  OPTIONAL { ?author wdt:P27 ?country. }         # Страна автора
+
+  # Получение меток на русском и английском
+  SERVICE wikibase:label {
+    bd:serviceParam wikibase:language "ru,en".
+  }
+}

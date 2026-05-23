@@ -1,0 +1,26 @@
+# Composers of musical works: SPARQL query for Wikidata
+# Авторы музыкальных произведений: SPARQL-запрос к Викиданным
+
+SELECT DISTINCT ?author ?authorLabel ?birthDate ?deathDate ?birthPlaceLabel ?deathPlaceLabel ?genderLabel ?countryLabel
+WHERE {
+  # Ищем авторов, которые создали хотя бы одно музыкальное произведение
+  ?work wdt:P31 wd:Q7366 ;  # Музыкальное произведение
+        wdt:P50 ?author.     # Автор произведения
+
+  # Даты жизни
+  OPTIONAL { ?author wdt:P569 ?birthDate. }   # Дата рождения
+  OPTIONAL { ?author wdt:P570 ?deathDate. }   # Дата смерти
+
+  # Места рождения и смерти
+  OPTIONAL { ?author wdt:P19 ?birthPlace. }   # Место рождения
+  OPTIONAL { ?author wdt:P20 ?deathPlace. }   # Место смерти
+
+  # Пол и страна
+  OPTIONAL { ?author wdt:P21 ?gender. }        # Пол
+  OPTIONAL { ?author wdt:P27 ?country. }       # Гражданство
+
+  # Получение меток на русском и английском
+  SERVICE wikibase:label {
+    bd:serviceParam wikibase:language "ru,en".
+  }
+}
